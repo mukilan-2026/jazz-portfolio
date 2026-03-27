@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Mukilan</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome 6 (free icons) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <!-- Google Fonts: Poppins + Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- GSAP & ScrollTrigger CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <!-- Typed.js for hero typing animation -->
+  <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+  <!-- React & ReactDOM & Babel (for JSX) -->
+  <script src="https://unpkg.com/react@18.2.0/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #05050f;
+      font-family: 'Inter', 'Poppins', sans-serif;
+      overflow-x: hidden;
+      color: #f0f3ff;
+      scroll-behavior: smooth;
+    }
+
+    /* custom neon + glassmorphic core */
+    .glass-nav {
+      background: rgba(10, 10, 25, 0.65);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease;
+    }
+
+    .navbar-brand {
+      font-weight: 800;
+      font-size: 1.8rem;
+      background: linear-gradient(135deg, #00f2ff, #a020f0);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      letter-spacing: -0.5px;
+    }
+
+    .nav-link {
+      color: #eef5ff !important;
+      font-weight: 500;
+      margin: 0 0.5rem;
+      position: relative;
+      transition: 0.25s;
+    }
+
+    .nav-link:hover, .nav-link.active {
+      color: #0af !important;
+      text-shadow: 0 0 6px #0af;
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0%;
+      height: 2px;
+      background: linear-gradient(90deg, #0af, #c084fc);
+      transition: width 0.3s ease;
+      border-radius: 4px;
+    }
+
+    .nav-link:hover::after {
+      width: 100%;
+    }
+
+    /* hero glow + glass card effect */
+    .hero-section {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-bg-glow {
+      position: absolute;
+      width: 60%;
+      height: 60%;
+      background: radial-gradient(circle, rgba(0, 170, 255, 0.2), transparent 70%);
+      top: 20%;
+      left: 20%;
+      filter: blur(70px);
+      z-index: 0;
+    }
+
+    .glass-hero-card {
+      background: rgba(15, 15, 35, 0.45);
+      backdrop-filter: blur(12px);
+      border-radius: 48px;
+      border: 1px solid rgba(0, 255, 255, 0.3);
+      padding: 2rem 2rem;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 15px rgba(0, 255, 255, 0.2);
+      transition: transform 0.4s;
+    }
+
+    .neon-text {
+      font-weight: 800;
+      background: linear-gradient(135deg, #ffffff, #0af, #b77eff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .btn-neon {
+      background: rgba(0, 0, 0, 0.5);
+      border: 1.5px solid #0af;
+      color: #0af;
+      border-radius: 60px;
+      padding: 12px 32px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      transition: 0.25s;
+      backdrop-filter: blur(4px);
+      margin-right: 1rem;
+    }
+
+    .btn-neon:hover {
+      background: #0af;
+      color: #000;
+      box-shadow: 0 0 20px #0af, inset 0 0 8px rgba(255,255,255,0.5);
+      transform: translateY(-3px);
+      border-color: #0af;
+    }
+
+    .btn-outline-purple {
+      border: 1.5px solid #c084fc;
+      color: #c084fc;
+      background: transparent;
+      border-radius: 60px;
+      padding: 12px 32px;
+      font-weight: 600;
+    }
+
+    .btn-outline-purple:hover {
+      background: #c084fc;
+      color: #0a0a1a;
+      box-shadow: 0 0 18px #c084fc;
+      transform: translateY(-3px);
+    }
+
+    /* section headers */
+    .section-header {
+      font-size: 2.8rem;
+      font-weight: 800;
+      margin-bottom: 3rem;
+      text-align: center;
+      background: linear-gradient(120deg, #fff, #0af, #b77eff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      display: inline-block;
+      width: 100%;
+    }
+
+    /* project cards - glass + neon interactive */
+    .project-card {
+      background: rgba(20, 20, 45, 0.55);
+      backdrop-filter: blur(12px);
+      border-radius: 32px;
+      border: 1px solid rgba(0, 255, 255, 0.25);
+      padding: 1.8rem;
+      transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+      height: 100%;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+    }
+
+    .project-card:hover {
+      transform: translateY(-12px) scale(1.02);
+      border-color: #0af;
+      box-shadow: 0 30px 45px -15px rgba(0, 170, 255, 0.4), 0 0 20px rgba(0, 170, 255, 0.3);
+      background: rgba(30, 30, 65, 0.7);
+    }
+
+    .project-icon {
+      font-size: 3rem;
+      color: #0af;
+      margin-bottom: 1rem;
+      display: inline-block;
+      transition: 0.3s;
+    }
+
+    .project-card:hover .project-icon {
+      transform: scale(1.1);
+      text-shadow: 0 0 10px #0af;
+    }
+
+    .project-title {
+      font-size: 1.7rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+    }
+
+    .project-desc {
+      color: #cdd9ff;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    /* photo section glassmorphic styling */
+    .glass-photo-card {
+      background: rgba(12, 12, 32, 0.55);
+      backdrop-filter: blur(14px);
+      border-radius: 56px;
+      border: 1px solid rgba(0, 255, 255, 0.35);
+      padding: 2rem;
+      transition: transform 0.3s ease, box-shadow 0.3s;
+      box-shadow: 0 20px 35px -10px rgba(0,0,0,0.4);
+    }
+
+    .glass-photo-card:hover {
+      transform: translateY(-6px);
+      border-color: #c084fc;
+      box-shadow: 0 25px 40px -12px rgba(0, 170, 255, 0.3);
+    }
+
+    .photo-frame {
+      position: relative;
+      display: inline-block;
+    }
+
+    .photo-frame img {
+      transition: all 0.4s ease;
+      border-radius: 50%;
+      box-shadow: 0 0 0 3px rgba(0, 170, 255, 0.6), 0 0 0 8px rgba(160, 32, 240, 0.3);
+    }
+
+    .photo-frame:hover img {
+      transform: scale(1.02);
+      box-shadow: 0 0 0 4px #0af, 0 0 25px #0af;
+    }
+
+    /* contact glassmorphic */
+    .glass-contact {
+      background: rgba(12, 12, 28, 0.6);
+      backdrop-filter: blur(16px);
+      border-radius: 48px;
+      border: 1px solid rgba(170, 0, 255, 0.3);
+      padding: 2rem;
+      transition: all 0.3s;
+    }
+
+    .contact-info-item {
+      background: rgba(0, 0, 0, 0.35);
+      border-radius: 28px;
+      padding: 1rem 1.5rem;
+      margin-bottom: 1rem;
+      border-left: 4px solid #0af;
+      transition: 0.2s;
+    }
+
+    .contact-info-item i {
+      font-size: 1.6rem;
+      width: 2.5rem;
+      color: #0af;
+    }
+
+    .form-control-glass {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(0, 255, 255, 0.3);
+      border-radius: 60px;
+      padding: 12px 20px;
+      color: white;
+      transition: 0.2s;
+    }
+
+    .form-control-glass:focus {
+      background: rgba(20,20,55,0.8);
+      border-color: #0af;
+      box-shadow: 0 0 12px rgba(0,170,255,0.4);
+      outline: none;
+      color: white;
+    }
+
+    textarea.form-control-glass {
+      border-radius: 28px;
+      resize: none;
+    }
+
+    .btn-submit {
+      background: linear-gradient(95deg, #0af, #a855f7);
+      border: none;
+      border-radius: 60px;
+      padding: 12px;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+      transition: 0.3s;
+    }
+
+    .btn-submit:hover {
+      transform: scale(1.02);
+      box-shadow: 0 0 22px #0af;
+      background: linear-gradient(95deg, #0af, #c084fc);
+    }
+
+    footer {
+      border-top: 1px solid rgba(0, 255, 255, 0.2);
+      background: rgba(0,0,0,0.3);
+      backdrop-filter: blur(4px);
+    }
+
+    /* responsive */
+    @media (max-width: 768px) {
+      .section-header {
+        font-size: 2rem;
+      }
+      .glass-hero-card {
+        padding: 1.5rem;
+      }
+      .btn-neon, .btn-outline-purple {
+        padding: 8px 20px;
+        margin-bottom: 0.5rem;
+      }
+      .glass-photo-card {
+        text-align: center;
+      }
+    }
+
+    /* scrollbar custom */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0a0a1a;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #0af;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    // REACT APP WITH FULL PORTFOLIO + PHOTO SECTION
+    const { useState, useEffect, useRef } = React;
+
+    // Main App Component
+    const Portfolio = () => {
+      const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+      const heroRef = useRef(null);
+      const photoRef = useRef(null);
+      const projectsRef = useRef(null);
+      const contactRef = useRef(null);
+      const typedElementRef = useRef(null);
+
+      // handle form mock submit
+      const handleSubmit = (e) => {
+        e.preventDefault();
+        alert(`✨ Thanks ${formData.name || 'friend'}! Mukilan will reach you soon. ✨`);
+        setFormData({ name: '', email: '', message: '' });
+      };
+
+      const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+      };
+
+      // Smooth scroll for nav links
+      const scrollToSection = (ref) => {
+        ref.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      };
+
+      // GSAP + ScrollTrigger animations
+      useEffect(() => {
+        if (typeof gsap !== 'undefined' && ScrollTrigger) {
+          gsap.registerPlugin(ScrollTrigger);
+          
+          // fade-up animation for project cards
+          gsap.fromTo('.project-card', 
+            { opacity: 0, y: 80 },
+            {
+              opacity: 1, y: 0,
+              duration: 0.9,
+              stagger: 0.2,
+              scrollTrigger: {
+                trigger: '#projects-section',
+                start: 'top 80%',
+                toggleActions: 'play none none reverse',
+              },
+              ease: "power3.out"
+            }
+          );
+          
+          // contact animations
+          gsap.fromTo('.contact-left-info, .contact-form-wrapper', 
+            { opacity: 0, x: -40 },
+            {
+              opacity: 1, x: 0,
+              duration: 0.8,
+              stagger: 0.2,
+              scrollTrigger: {
+                trigger: '#contact-section',
+                start: 'top 75%',
+              },
+              ease: "back.out(0.6)"
+            }
+          );
+          
+          // hero animations
+          gsap.fromTo('.hero-main-title', 
+            { opacity: 0, scale: 0.95 },
+            { opacity: 1, scale: 1, duration: 1, delay: 0.2, ease: "elastic.out(1, 0.5)" }
+          );
+          gsap.fromTo('.hero-cta-buttons', 
+            { opacity: 0, y: 30 },
+            { opacity: 1, y: 0, duration: 0.8, delay: 0.7 }
+          );
+          
+          // NEW: photo section animation
+          gsap.fromTo('.glass-photo-card', 
+            { opacity: 0, scale: 0.92, y: 40 },
+            {
+              opacity: 1, scale: 1, y: 0,
+              duration: 1,
+              scrollTrigger: {
+                trigger: '#photo-section',
+                start: 'top 70%',
+                toggleActions: 'play none none reverse',
+              },
+              ease: "power2.out"
+            }
+          );
+          
+          ScrollTrigger.refresh();
+        }
+        return () => {
+          ScrollTrigger?.getAll()?.forEach(trigger => trigger.kill());
+        };
+      }, []);
+
+      // Typed.js initialization
+      useEffect(() => {
+        if (typedElementRef.current && window.Typed) {
+          const typed = new Typed(typedElementRef.current, {
+            strings: ['Software Developer', 'Tech Enthusiast', 'UI/UX Visionary', 'Creative Coder'],
+            typeSpeed: 65,
+            backSpeed: 45,
+            backDelay: 1600,
+            startDelay: 500,
+            loop: true,
+            showCursor: true,
+            cursorChar: '|',
+            smartBackspace: true,
+          });
+          return () => typed.destroy();
+        }
+      }, []);
+
+      return (
+        <>
+          {/* Sticky Navbar - glass morph */}
+          <nav className="navbar navbar-expand-lg sticky-top glass-nav py-3">
+            <div className="container">
+              <a className="navbar-brand" href="#" onClick={(e) => { e.preventDefault(); window.scrollTo({top:0, behavior:'smooth'}); }}>
+                ✦ MUKILAN
+              </a>
+              <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation" style={{borderColor:'#0af', color:'#0af'}}>
+                <span className="navbar-toggler-icon" style={{filter:'invert(1)'}}></span>
+              </button>
+              <div className="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul className="navbar-nav">
+                  <li className="nav-item"><button className="nav-link btn btn-link" onClick={() => scrollToSection(heroRef)}>Home</button></li>
+                  <li className="nav-item"><button className="nav-link btn btn-link" onClick={() => scrollToSection(photoRef)}>Photo</button></li>
+                  <li className="nav-item"><button className="nav-link btn btn-link" onClick={() => scrollToSection(projectsRef)}>Projects</button></li>
+                  <li className="nav-item"><button className="nav-link btn btn-link" onClick={() => scrollToSection(contactRef)}>Contact</button></li>
+                </ul>
+              </div>
+            </div>
+          </nav>
+
+          {/* HERO SECTION */}
+          <section ref={heroRef} className="hero-section position-relative">
+            <div className="hero-bg-glow"></div>
+            <div className="container position-relative" style={{ zIndex: 2 }}>
+              <div className="row justify-content-center">
+                <div className="col-lg-9 col-xl-8">
+                  <div className="glass-hero-card text-center">
+                    <h1 className="display-3 fw-bold mb-3 hero-main-title">
+                      Hi, I'm <span className="neon-text">Mukilan</span>
+                    </h1>
+                    <div className="fs-2 fw-semibold mb-4">
+                      I'm a <span ref={typedElementRef} style={{ color: '#0af', textShadow: '0 0 8px #0af' }}></span>
+                    </div>
+                    <p className="lead mb-4 opacity-75">
+                      Crafting digital experiences with futuristic design & robust code. <br />
+                      Blending innovation and performance.
+                    </p>
+                    <div className="hero-cta-buttons d-flex flex-wrap justify-content-center gap-3">
+                      <button onClick={() => scrollToSection(projectsRef)} className="btn btn-neon">
+                        <i className="fas fa-arrow-down me-2"></i>View Projects
+                      </button>
+                      <button onClick={() => scrollToSection(contactRef)} className="btn btn-outline-purple">
+                        <i className="fas fa-paper-plane me-2"></i>Contact Me
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* 🆕 PHOTO SECTION — modern, glassmorphic, dynamic avatar */}
+          <section id="photo-section" ref={photoRef} className="py-5 mt-4">
+            <div className="container py-4">
+              <div className="glass-photo-card row align-items-center g-5">
+                <div className="col-md-5 text-center">
+                  <div className="photo-frame">
+                    <img 
+                      src="imgjazz.jpeg" 
+                      alt="Mukilan avatar - creative portrait" 
+                      className="img-fluid rounded-circle shadow-lg" 
+                      style={{ maxWidth: '260px', width: '100%', border: '2px solid rgba(0,170,255,0.7)' }}
+                    />
+                  </div>
+                </div>
+                <div className="col-md-7">
+                  <h2 className="fw-bold neon-text" style={{ fontSize: '2.4rem' }}>✦ Visual Storyteller ✦</h2>
+                  <p className="lead mt-3" style={{ color: '#e0e7ff' }}>
+                    I'm Mukilan — software developer by day, creative photographer & design alchemist by passion. 
+                    Every frame, every line of code carries intention. This photo space reflects my vision: 
+                    bold, minimal, and futuristic.
+                  </p>
+                  <div className="d-flex flex-wrap gap-3 mt-4">
+                    <span className="badge bg-dark text-info px-4 py-2 rounded-pill fs-6">
+                      <i className="fas fa-camera-retro me-2"></i> Photo enthusiast
+                    </span>
+                    <span className="badge bg-dark text-info px-4 py-2 rounded-pill fs-6">
+                      <i className="fas fa-laptop-code me-2"></i> Creative coder
+                    </span>
+                    <span className="badge bg-dark text-info px-4 py-2 rounded-pill fs-6">
+                      <i className="fas fa-palette me-2"></i> Glassmorphism lover
+                    </span>
+                  </div>
+                  <p className="mt-4 small text-info-emphasis">
+                    <i className="fas fa-quote-left me-2"></i> Innovation meets aesthetics — that's my digital signature.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* PROJECTS SECTION */}
+          <section id="projects-section" ref={projectsRef} className="py-5 mt-2">
+            <div className="container py-5">
+              <h2 className="section-header">✦ IMMERSIVE PROJECTS ✦</h2>
+              <div className="row g-4">
+                {/* Project 1 */}
+                <div className="col-md-6 col-lg-4">
+                  <div className="project-card">
+                    <div className="project-icon"><i className="fas fa-tint"></i></div>
+                    <h3 className="project-title">Real-Time Blood Donor Finder</h3>
+                    <p className="project-desc">
+                      Geolocation-based emergency platform connecting donors & hospitals instantly. 
+                      Real-time alerts + live donor mapping.
+                    </p>
+                    <div className="mt-3"><i className="fas fa-code me-1" style={{color:'#0af'}}></i><span className="small ms-1">React, Firebase, Leaflet</span></div>
+                  </div>
+                </div>
+                {/* Project 2 */}
+                <div className="col-md-6 col-lg-4">
+                  <div className="project-card">
+                    <div className="project-icon"><i className="fas fa-cube"></i></div>
+                    <h3 className="project-title">Framer Companion</h3>
+                    <p className="project-desc">
+                      AI-powered design companion for framer & prototyping. Auto-generate animations, 
+                      component suggestions and export.
+                    </p>
+                    <div className="mt-3"><i className="fas fa-code me-1" style={{color:'#0af'}}></i><span className="small ms-1">Next.js, OpenAI, Framer API</span></div>
+                  </div>
+                </div>
+                {/* Project 3 */}
+                <div className="col-md-6 col-lg-4">
+                  <div className="project-card">
+                    <div className="project-icon"><i className="fas fa-users"></i></div>
+                    <h3 className="project-title">Student Management System</h3>
+                    <p className="project-desc">
+                      Full-stack academic hub with attendance, grade tracking, real-time analytics 
+                      and secure role-based dashboards.
+                    </p>
+                    <div className="mt-3"><i className="fas fa-code me-1" style={{color:'#0af'}}></i><span className="small ms-1">Django, React, PostgreSQL</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* CONTACT SECTION */}
+          <section id="contact-section" ref={contactRef} className="py-5 mt-2 mb-5">
+            <div className="container py-4">
+              <h2 className="section-header">⚡ CONNECT WITH ME ⚡</h2>
+              <div className="glass-contact">
+                <div className="row gy-5">
+                  {/* Left side contact info */}
+                  <div className="col-lg-5 contact-left-info">
+                    <h3 className="fw-bold mb-4" style={{color:'#ffffff'}}><i className="fas fa-address-card me-2 text-info"></i> Get in touch</h3>
+                    <div className="contact-info-item d-flex align-items-center">
+                      <i className="fas fa-user-astronaut me-3"></i>
+                      <div><strong>Name:</strong> Mukilan</div>
+                    </div>
+                    <div className="contact-info-item d-flex align-items-center">
+                      <i className="fas fa-envelope me-3"></i>
+                      <div><strong>Email:</strong> mukilankutty272@gmail.com</div>
+                    </div>
+                    <div className="contact-info-item d-flex align-items-center">
+                      <i className="fas fa-mobile-alt me-3"></i>
+                      <div><strong>Mobile:</strong> +91 9342386310</div>
+                    </div>
+                    <div className="mt-4">
+                      <div className="d-flex gap-3 fs-4">
+                        <a href="#" className="text-info" style={{transition:'0.2s'}}><i className="fab fa-github"></i></a>
+                        <a href="#" className="text-info" style={{transition:'0.2s'}}><i className="fab fa-linkedin"></i></a>
+                        <a href="#" className="text-info" style={{transition:'0.2s'}}><i className="fab fa-twitter"></i></a>
+                      </div>
+                    </div>
+                  </div>
+                  {/* Right side mock contact form */}
+                  <div className="col-lg-7 contact-form-wrapper">
+                    <h3 className="fw-bold mb-4"><i className="fas fa-pen-fancy me-2 text-warning"></i> Send a message</h3>
+                    <form onSubmit={handleSubmit}>
+                      <div className="mb-3">
+                        <input type="text" className="form-control form-control-glass" name="name" placeholder="Your name" value={formData.name} onChange={handleChange} required />
+                      </div>
+                      <div className="mb-3">
+                        <input type="email" className="form-control form-control-glass" name="email" placeholder="Email address" value={formData.email} onChange={handleChange} required />
+                      </div>
+                      <div className="mb-4">
+                        <textarea className="form-control form-control-glass" rows="3" name="message" placeholder="Your message..." value={formData.message} onChange={handleChange} required></textarea>
+                      </div>
+                      <button type="submit" className="btn btn-submit w-100 text-white fw-semibold">Launch Message <i className="fas fa-rocket ms-2"></i></button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* FOOTER */}
+          <footer className="py-4 text-center">
+            <div className="container">
+              <p className="mb-0 opacity-75 small">© 2025 Mukilan — Crafted with neon & passion. <i className="fas fa-code text-info"></i> | Photo section: digital identity</p>
+            </div>
+          </footer>
+        </>
+      );
+    };
+
+    // Render React App
+    ReactDOM.createRoot ? ReactDOM.createRoot(document.getElementById('root')).render(<Portfolio />) : ReactDOM.render(<Portfolio />, document.getElementById('root'));
+  </script>
+
+  <!-- Bootstrap JS bundle (for navbar toggler) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Small additional fallback for GSAP if needed: ensures that any ScrollTrigger conflict is handled
+    window.addEventListener('load', () => {
+      if (typeof ScrollTrigger !== 'undefined') {
+        ScrollTrigger.refresh();
+      }
+    });
+  </script>
+</body>
+</html>
